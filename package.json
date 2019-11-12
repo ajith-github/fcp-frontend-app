@@ -7,6 +7,7 @@
     "example": "root"
   },
   "scripts": {
+    "start": "http-server -p 8081 ./",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -45,5 +46,8 @@
     "gulp-sourcemaps": "^2.6.4",
     "gulp-open": "^3.0.1"
   },
-  "homepage": "http://demos.creative-tim.com/argon-dashboard/index.html"
+  "homepage": "http://demos.creative-tim.com/argon-dashboard/index.html",
+  "dependencies": {
+    "http-server": "^0.11.1"
+  }
 }
