@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'master'
+            label 'nomad_docker_slave'
         }
     }
     stages {
@@ -10,12 +10,16 @@ pipeline {
                 checkout scm
             }
         }
-        stage ('setup') {
+        stage ('docker_build') {
             steps {
-                sh """
-                ls
-                """
+                sh 'eval $(aws ecr get-login --registry-ids 910176200576 --no-include-email --region us-east-1)'
+                sh 'docker build -t 910176200576.dkr.ecr.us-east-1.amazonaws.com/deployment/frontend-sample . --no-cache'
 
+            }
+        }
+        stage ('docker_push') {
+            steps {
+                sh 'docker push 910176200576.dkr.ecr.us-east-1.amazonaws.com/deployment/frontend-sample'
             }
         }
 
