@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  badapp-frontend:
+    build: .
+    ports:
+     - "8000:80"
