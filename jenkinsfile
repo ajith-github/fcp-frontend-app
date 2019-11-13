@@ -22,6 +22,11 @@ pipeline {
                 sh 'docker push 910176200576.dkr.ecr.us-east-1.amazonaws.com/deployment/frontend-sample'
             }
         }
+        stage ('clear_image_from_slave') {
+            steps {
+                sh 'docker rmi -f 910176200576.dkr.ecr.us-east-1.amazonaws.com/deployment/frontend-sample'
+            }
+        }
 
     }
 }
