@@ -1,0 +1,14 @@
+<% include ../partials/head %>
+    <body >
+        <div class="container">Landing page</div>
+        <% if (user) { %>
+            <h2><%= user.email %></h2>
+          <% } %>
+        <% if (user) { %>
+            <a href="/logout" role="button" class="btn btn-primary">logout</a>
+        <% } %>
+        <% include ../partials/scripts %>
+        <% include ../partials/scripts-chat %>
+    </body>
+</html>
+

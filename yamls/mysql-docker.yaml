@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+
+  fcp-mysql-container:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: 13NCWciZXzARWEt4kVMICopy
+      MYSQL_DATABASE: fcp-sample-app-db
+    ports:
+      - "3308:3306"

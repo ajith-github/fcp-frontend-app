@@ -1,49 +1,25 @@
 {
-  "name": "argon-dashboard",
-  "version": "1.1.0",
-  "description": "Argon Dashboard. Coded by Creative Tim",
-  "main": "index.html",
-  "directories": {
-    "example": "root"
-  },
+  "name": "badminton-manager",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/creativetimofficial/argon-dashboard.git"
-  },
-  "keywords": [
-    "argon dashboard",
-    "bootstrap admin",
-    "bootstrap dashboard",
-    "argon design admin",
-    "argon design",
-    "creative tim",
-    "html dashboard",
-    "html css dashboard",
-    "web dashboard",
-    "freebie",
-    "free bootstrap dashboard",
-    "css3 dashboard",
-    "bootstrap admin",
-    "bootstrap dashboard",
-    "frontend",
-    "responsive bootstrap dashboard"
-  ],
-  "author": "Creative Tim <hello@creative-tim.com> (https://www.creative-tim.com/)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/creativetimofficial/argon-dashboard/issues"
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
+    "debug": "~4.1.1",
+    "ejs": "^2.7.1",
+    "express": "~4.17.1",
+    "express-session": "^1.17.0",
+    "googleapis": "^45.0.0",
+    "http-errors": "~1.7.3",
+    "morgan": "~1.9.1",
+    "mysql": "^2.17.1",
+    "s3": "^4.4.0",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^5.0.0",
-    "gulp-clean": "^0.4.0",
-    "gulp-install": "^1.1.0",
-    "gulp-sass": "^4.0.1",
-    "gulp-sourcemaps": "^2.6.4",
-    "gulp-open": "^3.0.1"
-  },
-  "homepage": "http://demos.creative-tim.com/argon-dashboard/index.html"
+    "dotenv": "^8.2.0"
+  }
 }
