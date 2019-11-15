@@ -18,23 +18,51 @@ function getGoogleSSO(){
 }
 
 
-function signIn(){
+function login() {
+    let email = $('#user-email').val()
+    let passwd = $('#user-passwd').val()
+    console.log('email: %s, password: %s', email, passwd)
+    $.ajax({
+        url: '/login',
+        dataType: 'json',
+        type: 'post',
+        contentType: 'application/json',
+        data: JSON.stringify( {
+            email: email,
+            password: passwd
+        } ),
+        processData: false,
+        success: function( data, textStatus, jQxhr ){
+            console.log('[signIn] ajax response: ', data);
+        },
+        error: function( jqXhr, textStatus, errorThrown ){
+            console.log( 'err: ', errorThrown );
+        }
+    });
+}
+
+async function axiospost(){
+
+}
+
+async function signIn(){
     try {
-        console.log('sgasdgsdgs')
         let email = $('#user-email').val()
         let passwd = $('#user-passwd').val()
         console.log('email: %s, password: %s', email, passwd)
-        axios.post('/login', {
+        await axios.post('/login', {
             email: email,
             password: passwd
         })
         .then(function (response) {
             console.log('[signIn] axios response: ', response);
-            window.location.href = '/'
+            return response.data
+
         })
         .catch(function (error) {
             console.log('[signIn] axios error: ', error);
         });
+        window.location.href = '/'
     } catch (error) {
         console.log('[signIn] err: ', err)
     }

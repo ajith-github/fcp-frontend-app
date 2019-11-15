@@ -3,18 +3,37 @@ let google_auth = require('../lib/google-auth')
 
 let BASE_API_URL = process.env.BASE_API_URL
 
-let homepage = function(req, res){
-    console.log('homepage')
-    let user_details = false
-    if (req.session.hasOwnProperty('user')){
-        user_details = req.session.user
-    } else {
-        return res.status(301).redirect('/login')
+function setPrimaryTheme() {
+    let theme = process.env.PRIMARY_THEME
+    let theme_list = {
+        "DEFAULT": "bg-gradient-default",
+        "BLUE": "bg-gradient-primary",
+        "GREEN": "bg-gradient-success"
     }
-    res.render('pages/index', {
-        title: 'Home',
-        user: user_details
-    });
+    return theme_list[theme]
+}
+
+let homepage = function(req, res){
+    try {
+        let user_details = false
+        if (req.session.hasOwnProperty('user')){
+            console.log('[homepage frontend] redirect user to dashboard')
+            user_details = req.session.user
+            console.log('[homepage frontend] user_details ', user_details)
+            res.render('pages/index', {
+                title: 'Home',
+                user: user_details,
+                queue_url: process.env.QUEUE_URL,
+                primary_theme: setPrimaryTheme()
+            });
+            return
+        } else {
+            console.log('[homepage frontend] redirect user to login')
+            return res.status(301).redirect('/login')
+        }
+    } catch(error) {
+        console.error('[loginHandler frontend] error: ', error);
+    }
 }
 
 let googleURLHandler = function(req, res) {
@@ -30,25 +49,52 @@ let loginpage = function(req, res) {
     })
 }
 
-let loginHandler = async function(req, res) {
-    let params = req.body
-    console.log('params: ', params)
-
+async function callbackend(email, password) {
     let API_URL = BASE_API_URL + '/login'
-    console.log('API_URL: ', API_URL)
+    console.log('[loginHandler frontend] API_URL: ', API_URL)
+    let user_details = await axios.post(API_URL, {
+                            email: email,
+                            password: password
+                        })
+                        .then(function (response) {
 
-    axios.post(API_URL, {
-        email: params.email,
-        password: params.password
-    })
-    .then(function (response) {
-        console.log('[signIn] axios response: ', response);
-        res.render('pages/index')
-    })
-    .catch(function (error) {
-        console.log('error: ', error)
-        res.render('pages/login')
-    });
+                            // let status_code = response.status
+                            // let user_details = response.data
+
+                            console.log('[loginHandler frontend] status code: %s, data: ',
+                            response.status, response.data)
+                            return response.data
+                        })
+                        .catch(function (error) {
+                            console.log('[loginHandler frontend] error: ', error)
+                            return false
+                        });
+    return user_details
+}
+
+let loginHandler = async function(req, res) {
+    try {
+        let params = req.body
+        console.log('[loginHandler frontend] params: ', params)
+        let user_details = await callbackend(params.email, params.passwd)
+        console.log('user details from axios: ', user_details)
+        // let user_details = {
+        //     id: '115407523459751158832',
+        //     email: 'ajith26488@gmail.com'
+        // }
+        if (user_details) {
+            console.log('got user details')
+            req.session.user = user_details
+            return res.redirect('/')
+        } else {
+            console.log('no user_details')
+            return res.redirect('/')
+        }
+
+    } catch(error) {
+        console.error('[loginHandler frontend] error: ', error);
+        return res.status(301).redirect('/login')
+    }
 
 }
 
