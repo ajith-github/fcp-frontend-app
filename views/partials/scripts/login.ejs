@@ -1,0 +1,72 @@
+<script>
+'use strict';
+function getGoogleSSO(){
+    try {
+
+        axios.get('/google/login', { crossdomain: true })
+        .then(function (response) {
+            console.log('[getGoogleSSO] response: ', response);
+            $("#google-sso-link").attr("href",response.data.google_url);
+        })
+        .catch(function (error) {
+            console.log('[getGoogleSSO] error: ', error);
+        })
+
+    } catch (error) {
+        console.log('[getGoogleSSO] error: ', error)
+    }
+}
+
+
+function login() {
+    let email = $('#user-email').val()
+    let passwd = $('#user-passwd').val()
+    console.log('email: %s, password: %s', email, passwd)
+    $.ajax({
+        url: '/login',
+        dataType: 'json',
+        type: 'post',
+        contentType: 'application/json',
+        data: JSON.stringify( {
+            email: email,
+            password: passwd
+        } ),
+        processData: false,
+        success: function( data, textStatus, jQxhr ){
+            console.log('[signIn] ajax response: ', data);
+        },
+        error: function( jqXhr, textStatus, errorThrown ){
+            console.log( 'err: ', errorThrown );
+        }
+    });
+}
+
+async function axiospost(){
+
+}
+
+async function signIn(){
+    try {
+        let email = $('#user-email').val()
+        let passwd = $('#user-passwd').val()
+        console.log('email: %s, password: %s', email, passwd)
+        await axios.post('/login', {
+            email: email,
+            password: passwd
+        })
+        .then(function (response) {
+            console.log('[signIn] axios response: ', response);
+            return response.data
+
+        })
+        .catch(function (error) {
+            console.log('[signIn] axios error: ', error);
+        });
+        window.location.href = '/'
+    } catch (error) {
+        console.log('[signIn] err: ', err)
+    }
+
+
+}
+</script>

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: badapp-deployment
+  namespace: badapp
+  labels:
+    app: badapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: badapp
+  template:
+    metadata:
+      labels:
+        app: badapp
+    spec:
+      containers:
+      - name: badminton-manager
+        image: 385663944590.dkr.ecr.us-west-1.amazonaws.com/badminton-manager:latest
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+        - name: awsecr-cred
