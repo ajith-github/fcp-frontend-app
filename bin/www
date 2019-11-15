@@ -5,14 +5,15 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('badminton-manager:server');
+var debug = require('debug')('frontend:server');
 var http = require('http');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '3001');
+console.log('port: ', port)
 app.set('port', port);
 
 /**
@@ -20,10 +21,7 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
-// var io = require('socket.io')(server);
-// io.on('connection', function(socket){
-//   console.log('a user connected');
-// });
+
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -89,5 +87,7 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  console.log('Listening on addr ' + addr);
+  console.log('Listening on bind ' + bind);
+  console.log('Listening on address' + addr.address);
 }
