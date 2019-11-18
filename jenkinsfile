@@ -1,10 +1,32 @@
-node {
-   sh 'echo "hello"'
-   sh '''#!/bin/bash
-         pwd
-         ls -la 
-         whoami
-      '''
-   stage 'Checkout'
-   git 'git@gitlab.com:learn-by-coding/badminton-manager.git'
+pipeline {
+    agent {
+        node {
+            label 'nomad_docker_slave'
+        }
+    }
+    stages {
+        stage ('checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage ('docker_build') {
+            steps {
+                sh 'eval $(aws ecr get-login --registry-ids 910176200576 --no-include-email --region us-east-1)'
+                sh 'docker build -t 910176200576.dkr.ecr.us-east-1.amazonaws.com/deployment/frontend-sample . --no-cache'
+
+            }
+        }
+        stage ('docker_push') {
+            steps {
+                sh 'docker push 910176200576.dkr.ecr.us-east-1.amazonaws.com/deployment/frontend-sample'
+            }
+        }
+        stage ('clear_image_from_slave') {
+            steps {
+                sh 'docker rmi -f 910176200576.dkr.ecr.us-east-1.amazonaws.com/deployment/frontend-sample'
+            }
+        }
+
+    }
 }
