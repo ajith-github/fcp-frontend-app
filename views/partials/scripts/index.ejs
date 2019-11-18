@@ -58,32 +58,4 @@ function listQueues() {
     });
 }
 
-listMessages()
-setInterval(() => {
-    listMessages()
-}, 25000);
-
-
-function createQueue() {
-    console.log('createqueue')
-    let queue_name = $('#queue-name').val()
-    console.log('createqueue queue_name: ', queue_name)
-
-    $.ajax({
-        url: '/queue/create',
-        dataType: 'json',
-        type: 'post',
-        contentType: 'application/json',
-        data: JSON.stringify( {
-            queue_name: queue_name
-        } ),
-        processData: false,
-        success: function( data, textStatus, jQxhr ){
-            console.log('[createQueue] ajax response: ', data);
-        },
-        error: function( jqXhr, textStatus, errorThrown ){
-            console.log( 'createQueue err: ', errorThrown );
-        }
-    });
-}
 </script>

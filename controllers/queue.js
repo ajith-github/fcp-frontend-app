@@ -53,8 +53,6 @@ let sendMessageHandler = async function(req, res) {
 }
 
 module.exports = {
-    createHandler: createHandler,
-    listQueueHandler: listQueueHandler,
     listMessageHandler: listMessageHandler,
     sendMessageHandler: sendMessageHandler
 }
