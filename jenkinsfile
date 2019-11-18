@@ -10,21 +10,31 @@ pipeline {
                 checkout scm
             }
         }
+        stage ('Unit Test'){
+            steps{
+                sh 'echo "Running Unit tests !"'
+            }
+        }
+        stage ('security check'){
+            steps{
+                sh 'echo "Running Security tests !"'
+            }
+        }
         stage ('docker_build') {
             steps {
                 sh 'eval $(aws ecr get-login --registry-ids 910176200576 --no-include-email --region us-east-1)'
-                sh 'docker build -t 910176200576.dkr.ecr.us-east-1.amazonaws.com/deployment/frontend-sample . --no-cache'
+                sh 'docker build -t ${CONTAINER_IMAGE}:${GIT_TAG} . --no-cache'
 
             }
         }
         stage ('docker_push') {
             steps {
-                sh 'docker push 910176200576.dkr.ecr.us-east-1.amazonaws.com/deployment/frontend-sample'
+                sh 'docker push ${CONTAINER_IMAGE}:${GIT_TAG}'
             }
         }
         stage ('clear_image_from_slave') {
             steps {
-                sh 'docker rmi -f 910176200576.dkr.ecr.us-east-1.amazonaws.com/deployment/frontend-sample'
+                sh 'docker rmi -f ${CONTAINER_IMAGE}:${GIT_TAG}'
             }
         }
 
