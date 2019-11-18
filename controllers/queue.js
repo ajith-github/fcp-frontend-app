@@ -1,4 +1,7 @@
 var queue = require('../lib/queue')
+var axios = require('axios')
+
+let BASE_API_URL = process.env.BASE_API_URL
 
 let createHandler = async function(req, res) {
     let queue_name = req.body.queue_name
@@ -30,7 +33,7 @@ let listMessageHandler = async function(req, res) {
             WaitTimeSeconds: 0
         };
         let message = await queue.getMessage(params)
-        console.log('[listMessageHandler frontend] message: ', message)
+        // console.log('[listMessageHandler frontend] message: ', message)
         return res.status(200).json(message)
 
     } catch(ex) {
@@ -39,30 +42,29 @@ let listMessageHandler = async function(req, res) {
     }
 }
 
+
 let sendMessageHandler = async function(req, res) {
     let message_body = req.body.message
     let title = req.body.title
     let author = req.body.author
+    let queue_url = process.env.QUEUE_URL
 
-    console.log('[sendMessageHandler frontend] message_body: ', message_body)
-    var params = {
-        DelaySeconds: 10,
-        MessageAttributes: {
-            "Title": {
-                DataType: "String",
-                StringValue: title
-            },
-            "Author": {
-                DataType: "String",
-                StringValue: author
-            }
-        },
-        MessageBody: message_body,
-        QueueUrl: process.env.QUEUE_URL
-    };
-    let messageId = await queue.sendMessage(params)
-    console.log('[sendMessageHandler frontend] messageId: ', messageId)
-    return res.status(200).json(messageId)
+
+    let API_URL = BASE_API_URL + '/queue/message'
+    try {
+        let response = await axios.post(API_URL, {
+            message_body,
+            title,
+            author,
+            queue_url
+        })
+        console.log('[sendMessageHandler frontend] response: ', response.data)
+
+        return res.status(200).send(response.data)
+    } catch(ex) {
+        console.log('[sendMessageHandler frontend] exception ', ex)
+        return res.status(500).send('Internal server error')
+    }
 }
 
 module.exports = {

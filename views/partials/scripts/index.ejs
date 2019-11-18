@@ -36,6 +36,7 @@ async function sendMessage() {
                         author: author
                     })
     console.log('[sendMessage] response: ', response)
+    listMessages()
 }
 
 
@@ -60,7 +61,7 @@ function listQueues() {
 listMessages()
 setInterval(() => {
     listMessages()
-}, 15000);
+}, 25000);
 
 
 function createQueue() {
