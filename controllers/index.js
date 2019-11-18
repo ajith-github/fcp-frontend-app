@@ -1,4 +1,3 @@
-let BASE_API_URL = process.env.BASE_API_URL
 
 function setPrimaryTheme() {
     let theme = process.env.PRIMARY_THEME

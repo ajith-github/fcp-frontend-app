@@ -3,21 +3,6 @@ var axios = require('axios')
 
 let BASE_API_URL = process.env.BASE_API_URL
 
-let createHandler = async function(req, res) {
-    let queue_name = req.body.queue_name
-    console.log('[createHandler frontend] queue_name: ', queue_name)
-
-    let queue_url = await queue.createQueue(queue_name)
-    console.log('[createHandler frontend] queue_url: ', queue_url)
-    return res.status(200).json(queue_url)
-}
-
-let listQueueHandler = async function(req, res) {
-    let queue_urls = await queue.listQueue()
-    console.log('[listQueueHandler frontend] queue_urls: ', queue_urls)
-    return res.status(200).json(queue_urls)
-}
-
 let listMessageHandler = async function(req, res) {
     try {
         var params = {
@@ -44,20 +29,20 @@ let listMessageHandler = async function(req, res) {
 
 
 let sendMessageHandler = async function(req, res) {
-    let message_body = req.body.message
     let title = req.body.title
     let author = req.body.author
     let queue_url = process.env.QUEUE_URL
+    let message_body = req.body.message
 
 
     let API_URL = BASE_API_URL + '/queue/message'
     try {
         let response = await axios.post(API_URL, {
-            message_body,
-            title,
-            author,
-            queue_url
-        })
+                                    message_body,
+                                    title,
+                                    author,
+                                    queue_url
+                                })
         console.log('[sendMessageHandler frontend] response: ', response.data)
 
         return res.status(200).send(response.data)
