@@ -2,24 +2,62 @@
 
 'use strict';
 
-function loadTable(message) {
-    var table = $('#queue-table');
-    table.find("tbody tr").remove();
-    console.log('message body: ', message.Body)
-    table.append("<tr>"
-        + "<td>" + message.MessageAttributes.Author.StringValue + "</td>"
-        + "<td>" + message.MessageAttributes.Title.StringValue + "</td>"
-        + "<td>" + message.Body + "</td>"
-        +"</tr>");
-};
+$('#send-message').addClass('disabled')
+function loadTable(messages){
+    var table = $('#queue-table td')
 
+    messages.forEach(message => {
+        console.log('message: ', message)
+        let tableContent = "<tr>"
+            + "<td>" + message.MessageAttributes.Author.StringValue + "</td>"
+            + "<td>" + message.MessageAttributes.Title.StringValue + "</td>"
+            + "<td>" + message.Body + "</td>"
+            +"</tr>"
+        // table.append(tableContent);
+        $('#queue-table tr:last').after(tableContent)
+        deleteMessage(message.ReceiptHandle)
+    });
+}
+
+async function deleteMessage(receipt_handle) {
+    try {
+        let response = await axios.post('/queue/delete', {
+                        receipt_handle: receipt_handle
+                    })
+        console.log('[deleteMessage] response: ', response)
+    } catch(ex) {
+        console.log('[deleteMessage] could not delete message ', ex)
+    }
+}
+
+function randomize(){
+    var chance = new Chance();
+    let title = chance.sentence({ words: 5 });
+    let author = chance.name();
+    let summary = chance.paragraph({ sentences: 1 })
+    return { title, author, summary}
+}
+
+function setTextValues(){
+    let data = randomize()
+    console.log('data: ', data)
+    $('#message-body').val(data.summary)
+    $('#message-title').val(data.title)
+    $('#message-author').val(data.author)
+    $('#send-message').removeClass('disabled')
+}
 
 async function listMessages() {
     try {
         let queue_message = await axios.get('/queue/messages')
         console.log('[listMessages] qeueu_message: ', queue_message)
-        if (queue_message.data.hasOwnProperty('Messages'))
-            loadTable(queue_message.data['Messages'][0])
+
+        if (queue_message.data.hasOwnProperty('Messages')) {
+            let messages = queue_message.data.Messages
+            console.log('[listMessages] Messages: ', messages)
+
+            loadTable(messages)
+        }
     } catch (error) {
         console.log('[listMessages] err: ', error)
     }
@@ -30,32 +68,30 @@ async function sendMessage() {
     let title = $('#message-title').val()
     let author = $('#message-author').val()
 
+    $('#send-message').addClass('disabled')
+    $('#send-message').text('sending...')
     let response = await axios.post('/queue/message', {
                         message: message_body,
                         title: title,
                         author: author
                     })
     console.log('[sendMessage] response: ', response)
+    await delay(10000)
+
+    clearInputFields()
+
+    $('#send-message').text('Submit')
     listMessages()
 }
 
+const delay = (duration) =>
+  new Promise(resolve => setTimeout(resolve, duration));
 
-function listQueues() {
-    console.log('listQueues')
-
-    $.ajax({
-        url: '/queue/list',
-        dataType: 'json',
-        type: 'get',
-        contentType: 'application/json',
-        success: function( data, textStatus, jQxhr ){
-            console.log('[listQueues] ajax response: ', data);
-            loadTable(data)
-        },
-        error: function( jqXhr, textStatus, errorThrown ){
-            console.log( 'listQueues err: ', errorThrown );
-        }
-    });
+function clearInputFields(){
+    $('#message-body').val('')
+    $('#message-title').val('')
+    $('#message-author').val('')
 }
 
+listMessages()
 </script>

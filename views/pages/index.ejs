@@ -103,7 +103,10 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-auto">
-                                                        <a href="#" onclick="sendMessage()" class="btn btn-lg btn-primary">Submit</a>
+                                                        <a href="#" id="send-message" onclick="sendMessage()" class="btn btn-lg btn-primary">Submit</a>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <a href="#" onclick="setTextValues()" class="btn btn-lg btn-primary">Randomize</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -150,7 +153,8 @@
                                     <tr>
                                         <th scope="col">Author</th>
                                         <th scope="col">Title</th>
-                                        <th scope="col">Message Body</th></tr>
+                                        <th scope="col">Message Body</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
 
@@ -167,6 +171,7 @@
         </div>
     </div>
     <!--   Core   -->
+    <script src="http://chancejs.com/chance.min.js"></script>
     <script src="/js/plugins/jquery/dist/jquery.min.js"></script>
     <script src="/js/plugins/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!--   Optional JS   -->

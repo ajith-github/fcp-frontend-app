@@ -3,22 +3,37 @@ var axios = require('axios')
 
 let BASE_API_URL = process.env.BASE_API_URL
 
+let deleteHandler = async function(req, res) {
+    try {
+        let receipt_handle = req.body.receipt_handle
+        let API_URL = BASE_API_URL + '/queue/delete'
+        let response = await axios.post(API_URL, {
+                                    receipt_handle
+                                })
+        console.log('[sendMessageHandler frontend] response: ', response.data)
+
+        return res.status(200).send(response.data)
+    } catch(ex) {
+        console.log('[deleteHandler frontend] exception ', ex)
+        return res.status(500).send('Internal server error')
+    }
+}
+
 let listMessageHandler = async function(req, res) {
     try {
         var params = {
             AttributeNames: [
             "SentTimestamp"
             ],
-            MaxNumberOfMessages: 1,
+            MaxNumberOfMessages: 10,
             MessageAttributeNames: [
             "All"
             ],
             QueueUrl: process.env.QUEUE_URL,
-            VisibilityTimeout: 0,
+            VisibilityTimeout: 60,
             WaitTimeSeconds: 0
         };
         let message = await queue.getMessage(params)
-        // console.log('[listMessageHandler frontend] message: ', message)
         return res.status(200).json(message)
 
     } catch(ex) {
@@ -54,5 +69,6 @@ let sendMessageHandler = async function(req, res) {
 
 module.exports = {
     listMessageHandler: listMessageHandler,
-    sendMessageHandler: sendMessageHandler
+    sendMessageHandler: sendMessageHandler,
+    deleteHandler: deleteHandler
 }
